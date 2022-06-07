@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "43454716006",
+    "project_id": "smrsignup-2c2f6",
+    "storage_bucket": "smrsignup-2c2f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43454716006:android:57dfa39993bcb629bd35a7",
+        "android_client_info": {
+          "package_name": "com.example.smr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "43454716006-4n89iq027sjglucb0gn7jd0kmlrsmr5k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3mqu2YbW2rfYhp2E5tIu3_9FG9XV--hM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "43454716006-4n89iq027sjglucb0gn7jd0kmlrsmr5k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
