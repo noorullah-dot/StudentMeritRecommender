@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smr/aboutus.dart';
 import 'package:smr/login_screen.dart';
 import 'package:smr/notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,6 +30,26 @@ String globleCollegeurl = 'http://college.globalgroup.edu.pk/';
 String brillientCollegeurl = 'https://topschools.pk/university/brilliant-college-of-science-dalazak-road-campus-peshawar/16417';
 String quidazamCollegeurl = 'https://www.ilmkidunya.com/colleges/quaid-e-azam-degree-college-peshawar-fee-structure.aspx';
 String fazaiaclgurl = 'https://fazaia.edu.pk/fazaiadegreecollegepeshawar/home';
+String cdc = "https://www.capital.edu.pk/";
+String NWI = "https://www.nwihs.edu.pk/";
+String MC = "https://www.themuslim.edu.pk/";
+String GFC = "https://www.facebook.com/Govt-Frontier-College-For-Women-Peshawar-645781155791863/";
+//String GCP = "https://gandhara.edu.pk/GCP/index.html";
+String PES = "https://pimspsh.edu.pk/";
+String NES = "https://www.niceeducationsystem.edu.pk/";
+String GIM = "https://www.kmu.edu.pk/ghazali-institute-medical-sciences-peshawar";
+String PCM = "https://pcms.edu.pk/";
+String PIM = "https://www.pimmspesh.edu.pk/";
+String HIM = "https://www.hims.edu.pk/";
+String PEFC = "https://pefcollege.edu.pk/";
+String RIMS = "https://rims.edu.pk/";
+String BPG = "https://brains.edu.pk/";
+String FHM = "https://fhmc.edu.pk/";
+String BCSP = "https://bcsp.edu.pk/";
+String RNC = "https://rnc.prime.edu.pk/";
+String ICHS = "https://ichs.edu.pk/";
+
+
 
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -44,7 +65,26 @@ class _HomeScreenState extends State<HomeScreen> {
   'assets/edward college.png','assets/govt pesh.jpg',
   'assets/hadaf.png','assets/islamiaclg.jpg',
   'assets/pmdc.jpg','assets/pmdcGirl.jpg',
-   'assets/icms.jpg','assets/leedsclg.png','assets/globalclg.jpg','assets/briliantclg.jpg','assets/quideazam.jpg','assets/fazaiaclg.jpg',];
+   'assets/icms.jpg','assets/leedsclg.png','assets/globalclg.jpg',
+   'assets/briliantclg.jpg','assets/quideazam.jpg','assets/fazaiaclg.jpg',
+   'assets/cdc.jpg','assets/NWI.jpg','assets/MC.jpg',
+   'assets/GFC.jpg','assets/PES.jpg',
+   'assets/NES.jpg','assets/GIM.jpg','assets/PCM.jpg',
+   'assets/PIM.jpg','assets/Hims.jpg','assets/PEF.jpg',
+   'assets/RIMS.jpg','assets/BPG.jpg','assets/FHM.png',
+   'assets/BCSP.png','assets/RNC.jpg','assets/ICHS.jpg'
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   ];
    
    
   //  List colleges_names=['Bisep','Edwards College Boys','Govt.CollegePeshawar Boys','Hadaf College Boys','Islamia College Boys',
@@ -147,42 +187,33 @@ Future<Position> _determinePosition() async {
               ),
            ListTile(
             leading: Icon(Icons.notifications),
-            title: Text('Notifications',style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),
+            title: Text('Notifications',style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),
             ),onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => Notifications())); 
             },),
             SizedBox(height: 10,),
           ListTile(
             leading: Icon(Icons.home),
-            title: Text('Home',style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),
+            title: Text('Home',style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),
             ),onTap: (){
               Navigator.of(context).pop();
-            },),
-            SizedBox(height: 10,),
-            ListTile(
-            leading: Icon(Icons.history),
-            title: Text('History',style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),
-            
-            ),onTap: (){
-               Navigator.of(context).pop();
             },),
             SizedBox(height: 10,),
 
             ListTile(
             leading: Icon(Icons.contacts_rounded),
-            title: Text('Contact us',style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),
+            title: Text('About us',style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),
             
             ),onTap: (){
-               Navigator.of(context).pop();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Aboutus()));
             }),
+
             ListTile(onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=> Loginscreen()));
             },
               leading: Icon(Icons.logout_outlined),
-              title:Text('Logout',style: TextStyle(fontSize: 19,fontWeight:FontWeight.bold)
-                ),        
-                      
-                ),
+              title:Text('Logout',style: TextStyle(fontSize: 15,fontWeight:FontWeight.bold)
+                ),),
             ],
       )
     ),

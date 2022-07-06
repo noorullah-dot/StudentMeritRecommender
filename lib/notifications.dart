@@ -14,7 +14,7 @@ class _NotificationsState extends State<Notifications> {
       appBar: AppBar(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
 
-        title: Text('Meritlists',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),centerTitle: true,),
+        title: Text('Merit Lists',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),centerTitle: true,),
       
     );
   }

@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, valid_regexps, unused_label, deprecated_member_use, avoid_web_libraries_in_flutter, unused_import
+import 'package:controller/controller.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smr/forgotpassword.dart';
 import 'package:smr/home_screen.dart';
 import 'package:smr/register_screen.dart';
 import 'package:get/get.dart';
@@ -19,7 +22,7 @@ class Loginscreen extends StatefulWidget {
 }
 
 class _LoginscreenState extends State<Loginscreen> {
-  late String _email;
+  late String email;
   
 final _auth = FirebaseAuth.instance;
 final _formkey = GlobalKey<FormState>();
@@ -52,7 +55,7 @@ void dispose(){
               child: Form(
                 key: _formkey,
                 child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -65,28 +68,21 @@ void dispose(){
                       autofillHints:[AutofillHints.email],
                       onSaved:(value){
                       emailcontroller.text=value!;
-                      _email = value;
+                      email = value;
                       },
                    
-                      validator: (value) {                      
-                            if (value!.isEmpty) 
-                            {
-                              return ("Please Enter Your Email");
-                            }
+                      validator: (email) => email != null && !EmailValidator.validate(email)
+                      ? 'Enter valid email'
+                      :null,
+                           
                           //   if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-ZA-Z0-9.-]+. [a-z]").hasMatch(value))
                           // {
                           // return ("Please Enter a valid email");
-                          // }
-                            
-                          else {
-                              return null;
-                            }
-                            
-                          },
                   
                         decoration: InputDecoration(
                         labelText: 'Enter Email',
                         prefixIcon: Icon(Icons.mail,color: Colors.blue,),
+                        suffixIcon: IconButton(onPressed: ()=> emailcontroller.clear(), icon: Icon(Icons.close),),
                         border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30))),
                         ),
@@ -129,7 +125,8 @@ void dispose(){
                     ),
                     Align(alignment: Alignment.centerRight,
                       child: TextButton(onPressed: (){
-                        }, child: Text('Forget password',style: TextStyle(fontSize: 12,color: Colors.blue),)),
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> Forgotpassword()));
+                        }, child: Text('Forgot Password? ',style: TextStyle(fontSize: 12,color: Colors.blue),)),
                     ),
                    
                      Container(width: 400, height: 60,decoration: BoxDecoration(shape: BoxShape.circle),
@@ -148,16 +145,15 @@ void dispose(){
                      ),
 
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [ 
                       Container(
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
-                      child: Align(alignment: Alignment.centerRight,
-                        child: FlatButton(onPressed: (){
+                      child:FlatButton(onPressed: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context)=> RigesterScreen()));
                             }, child: Text('Not register yet? Register now',style: TextStyle(color: Colors.blue,fontSize: 12,),),
                                           ),
-                      ),),
+                      ),
                     
                     ],
                     ),
