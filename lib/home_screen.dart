@@ -1,12 +1,23 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smr/aboutus.dart';
 import 'package:smr/login_screen.dart';
+import 'package:smr/model/merit_list.dart';
 import 'package:smr/notifications.dart';
+import 'package:smr/provider/providerScreen.dart';
+import 'package:smr/screens/RecommendedCollage.dart';
+import 'package:smr/screens/google_map/google_map_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'main.dart';
 //import 'package:geocoding/geocoding.dart';
 
 
@@ -52,7 +63,12 @@ String ICHS = "https://ichs.edu.pk/";
 
 
 
+
 class _HomeScreenState extends State<HomeScreen> {
+
+  TextEditingController controller =TextEditingController();
+  File? image;
+
    Future<void>launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url, forceWebView: true,enableJavaScript: true,enableDomStorage: false);
@@ -74,18 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
    'assets/RIMS.jpg','assets/BPG.jpg','assets/FHM.png',
    'assets/BCSP.png','assets/RNC.jpg','assets/ICHS.jpg'
 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    ];
-   
+
    
   //  List colleges_names=['Bisep','Edwards College Boys','Govt.CollegePeshawar Boys','Hadaf College Boys','Islamia College Boys',
   //  'Peshawar model Degree College Boys','Peshawar Model Degree College Girls','www.ICMSCollege.com','www.LeedsCollege.com','www.GlobalCollege.com','www.BriliantCollege.com','www.Quid_E_AzamCollege.com','www.FazaiaCollege.com'];
@@ -94,63 +100,16 @@ class _HomeScreenState extends State<HomeScreen> {
    icmsCollegeurl,leedsCollegeurl,globleCollegeurl,brillientCollegeurl,quidazamCollegeurl,fazaiaclgurl];
 
 
-/// Determine the current position of the device.
-///
-/// When the location services are not enabled or permissions
-/// are denied the `Future` will return an error.
-Future<Position> _determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
 
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled){
-    await Geolocator.openLocationSettings();
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the 
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
-  }
 
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale 
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
-    }
-  }
-  
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately. 
-    return Future.error(
-      'Location permissions are permanently denied, we cannot request permissions.');
-  } 
-
-  // When we reach here, permissions are granted and we can
-  // continue accessing the position of the device.
-  return await Geolocator.getCurrentPosition();
-}
-
-// Future<void> GetAdressFromLatLong(Position position) async {
-//  List<Placemark> placemark = (await PlacemarkFromCoordinates(position.longitude,position.latitude)) as List;
-//   print(placemark);
-//   Placemark place = placemark[0];
-// }
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       floatingActionButton:FloatingActionButton(child: Icon(Icons.add_location),onPressed: () async{
-      Position position = await _determinePosition();
-      print(position.latitude);
 
-      // location = ('Lat: ${position. latitude}, Long: ${position.longitude}');   
+       Navigator.push(context, MaterialPageRoute(builder: (context)=> GoogleMapScreen()));
+
       },),
       appBar: AppBar(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
@@ -158,9 +117,11 @@ Future<Position> _determinePosition() async {
         elevation: 0,
         actions: [
           IconButton(onPressed: (){
-
+            showAlertDialog(context,'Upload Marit List', 'upload', true);
           }, icon: Icon(Icons.add)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.search))
+          IconButton(onPressed: (){
+            showAlertDialog(context, 'Marks',"Calculate",false);
+          }, icon: Icon(Icons.search))
         ],
         bottom: PreferredSize(preferredSize: Size(14 ,10), child: Container(),),
         
@@ -239,5 +200,186 @@ Future<Position> _determinePosition() async {
        }));
 
 
+  }
+
+    void showAlertDialog(BuildContext context, String title, String buttonName ,bool isMarksButton) {
+
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text(title),
+        content: isMarksButton ? UploadMeritListDialog(): GetMarksDialog(controller: controller,),
+
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
+
+  }
+
+class GetMarksDialog extends StatefulWidget {
+  final TextEditingController controller;
+  const GetMarksDialog({required this.controller ,Key? key}) : super(key: key);
+
+  @override
+  State<GetMarksDialog> createState() => _GetMarksDialogState();
+}
+
+class _GetMarksDialogState extends State<GetMarksDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children:  [
+      Text('Total Marks 1100'),
+            TextField(
+              controller: widget.controller,
+              keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: InputDecoration(
+              labelText: 'Obtain Marks', hintText: 'eg. 800'),
+        ),
+
+          MyButton(onTap: _navigateToRecommendScreen, iconData: Icons.calculate, title: 'Calculate')
+      ],
+    );
+  }
+
+  void _navigateToRecommendScreen(BuildContext context) {
+    final  provider=context.read<GernalCalculation>();
+    final selectedList=provider.recommendCollege(int.parse(widget.controller.text));
+    Navigator.push(context,  MaterialPageRoute(builder: (context)=> RecommendedScreen(selectedList: selectedList ?? [],)));
+    widget.controller.clear();
+  }
+
+
+  }
+
+
+
+class UploadMeritListDialog extends StatefulWidget {
+
+  const UploadMeritListDialog({Key? key}) : super(key: key);
+
+  @override
+  State<UploadMeritListDialog> createState() => _UploadMeritListDialogState();
+}
+
+class _UploadMeritListDialogState extends State<UploadMeritListDialog> {
+  File? imageFile;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+        border: Border.all(color: Colors.green),),
+      child:_isImagePickWidget()
+    );
+  }
+
+
+  Widget _isImagePickWidget() {
+    if (imageFile != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  filterQuality: FilterQuality.high,
+                  fit: BoxFit.contain ,
+                  image: FileImage(imageFile!)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal:10),
+            child: MyButton(onTap: _imageOnTap, iconData: Icons.image, title: 'Upload'),
+          )
+
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children:  [
+          _imageByGalleryWidget(),
+          Text('OR'),
+          _pickImageByCameraWidget(),
+        ],
+      );
+    }
+  }
+
+  Widget _imageByGalleryWidget() {
+      return MyButton(onTap:_uploadByGallery,iconData: Icons.image,title: 'Upload by Gallery',);
+
+  }
+
+  Widget _pickImageByCameraWidget() {
+
+      return MyButton(onTap:_uploadByCamera,iconData: Icons.image,title: 'Upload by Camera',);
+
+  }
+  void _uploadByGallery(BuildContext context)async{
+
+    final image = await pickImage(context, ImageSource.gallery);
+
+   setState(() {
+     imageFile =image;
+   });
+
+  }
+  void _uploadByCamera(BuildContext context)async {
+    final image = await pickImage(context, ImageSource.camera);
+    setState(() {
+      imageFile = image;
+    });
+  }
+  // pick image from your device
+  Future<File?> pickImage(context,ImageSource source) async {
+    final pickedImage =
+    await ImagePicker().pickImage(source: source);
+    if (pickedImage != null) {
+      return File(pickedImage.path);
+    } else {
+      print('NO IMAGE Selected');
+      return null;
+    }
+  }
+
+  void _imageOnTap(BuildContext context) {
+    final  provider=context.read<GernalCalculation>();
+    provider.setMeritList(MeritListModel('', imageFile!));
+    Navigator.pop(context);
+    // final selectedList=provider.recommendCollege(int.parse(controller.text));
+    // Navigator.push(context,  MaterialPageRoute(builder: (context)=> RecommendedScreen(selectedList: selectedList ?? [],)));}
+  }
+}
+
+
+class MyButton extends StatelessWidget {
+  final BuildContextCallback onTap;
+  final IconData iconData;
+  final String title;
+  const MyButton({required this.onTap,required this.iconData,required this.title,Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 10),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20))),
+          onPressed: ()=>onTap(context), child: ListTile(leading:Icon(iconData),title: Text(title))),
+    );
   }
 }
