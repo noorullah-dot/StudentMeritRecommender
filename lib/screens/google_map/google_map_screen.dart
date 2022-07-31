@@ -16,7 +16,7 @@ class GoogleMapScreen extends StatefulWidget {
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   Completer<GoogleMapController> _controler= Completer();
-  static const LatLng _center = LatLng(31.5204, 74.3587);
+  static const LatLng _center = LatLng(33.9982162,71.5348287);
 
   List<Marker> marker= [];
 
